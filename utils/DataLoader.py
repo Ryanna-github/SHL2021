@@ -110,7 +110,7 @@ class SHLDataLoader():
         cells = pd.read_table(self.root_path + 'Cells.txt', header = None)
         cells['time'] = cells.apply(lambda x: x[0].split(" ")[0], axis = 1)
         cells['number'] = cells.apply(lambda x: x[0].split(" ")[3], axis = 1)
-        self.cells = gps.iloc[:int(self.load_ratio * cells.shape[0]),:] if self.load_ratio else cells
+        self.cells = cells.iloc[:int(self.load_ratio * cells.shape[0]),:] if self.load_ratio else cells
         print("Cells 读取完成，共 {} 条数据，用时 {}s".format(cells.shape[0], timer.get_update_time()))
         if detail:
             print("Cells Detail Loading...")
