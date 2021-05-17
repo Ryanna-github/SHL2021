@@ -99,7 +99,7 @@ class SHLDataLoader():
         print("GPS 读取完成，共 {} 条数据，用时 {}s".format(gps.shape[0], timer.get_update_time()))
         if detail:
             print("GPS Detail Loading...")
-            gps_detail = self.gps.apply(lambda x: self.gps_detail_transformer(x[0].split(" ")[3:-1], x[0].split(";")[0]), axis = 1)
+            gps_detail = self.gps.apply(lambda x: self.gps_detail_transformer(x[0].split(" ")[3:-1], x[0].split(" ")[0]), axis = 1)
             self.gps_detail = pd.concat(gps_detail.to_list()).reset_index(drop = True)
             print("\t-- GPS 详细信息提取完成，共 {} 条数据，用时 {}s".format(gps_detail.shape[0], timer.get_update_time()))
         self.gps = self.gps.drop([0], axis = 1)
@@ -119,10 +119,10 @@ class SHLDataLoader():
             print("\t-- Cells 详细信息提取完成，共 {} 条数据，用时 {}s".format(cells_detail.shape[0], timer.get_update_time()))
         self.cells = self.cells.drop([0], axis = 1)
     
-    def load_all(self):
+    def load_all(self, detail = True):
 
         self.load_loc()
-        self.load_wifi()
-        self.load_gps()
-        self.load_cells()
+        self.load_wifi(detail)
+        self.load_gps(detail)
+        self.load_cells(detail)
         self.load_label()
