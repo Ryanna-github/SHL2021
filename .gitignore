@@ -1,6 +1,7 @@
 # customized
 data/
 .*.pickle
+./history/*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
