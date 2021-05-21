@@ -35,7 +35,6 @@ class DataProcesser():
         self.data.df = pd.merge(self.data.df, self.data.wifi.rename({"number": "num_wifi"}, axis = 1), on = ['time'], how = 'left')
         self.data.df = pd.merge(self.data.df, self.data.cells.rename({"number": "num_cells"}, axis = 1), on = ['time'], how = 'left')
         print("------------------------ Basic Features Extracted (data.df) ------------------------")
-        print("Feature Initialized: {}".format(list(self.data.df)))
 
 
     def process_loc(self):
@@ -80,7 +79,7 @@ class DataProcesser():
         tmp_wifi = pd.merge(tmp_wifi, tmp_wifi_max.rename({"time_max": "time"}, axis = 1), on = ['time'])
         tmp_wifi = pd.merge(tmp_wifi, tmp_wifi_std.rename({"time_std": "time"}, axis = 1), on = ['time'])
         # v2 supplement
-        tmp_wifi['wifi_freq_5ratio'] = self.data.wifi_detail[['time', 'wifi_freq']].groupby(['time'], as_index = False).agg(lambda x: x.sum()/len(x))['wifi_freq']
+        tmp_wifi['wifi_freq_5ratio'] = self.data.wifi_detail.groupby(['time'], as_index = False).agg(lambda x: sum(x['wifi_freq']/len(x['wifi_freq'])))
 
         self.data.df = pd.merge(self.data.df, tmp_wifi, on = ['time'], how = 'left')
         new_features = set(list(self.data.df)).difference(old_features)

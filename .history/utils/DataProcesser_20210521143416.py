@@ -35,11 +35,9 @@ class DataProcesser():
         self.data.df = pd.merge(self.data.df, self.data.wifi.rename({"number": "num_wifi"}, axis = 1), on = ['time'], how = 'left')
         self.data.df = pd.merge(self.data.df, self.data.cells.rename({"number": "num_cells"}, axis = 1), on = ['time'], how = 'left')
         print("------------------------ Basic Features Extracted (data.df) ------------------------")
-        print("Feature Initialized: {}".format(list(self.data.df)))
 
 
     def process_loc(self):
-        old_features = set(list(self.data.df))
         # prepare
         self.data.df['time_dlt'] = self.data.df['time'].diff().fillna(method = 'bfill')
         self.data.df['valid_dlt'] = self.data.df.apply(lambda x: int(x['time_dlt'] <= 10000), axis = 1)
@@ -57,17 +55,14 @@ class DataProcesser():
         self.data.df['speed_dif'] = self.data.df.apply(lambda x: np.abs(x['east_speed'] - x['north_speed']), axis = 1)
         # acc 
         self.data.df['speed_dlt'] = self.data.df['speed'].diff(1)
-        self.data.df['acc'] = self.data.df.apply(lambda x: x['speed_dlt']/x['time_dlt'] if x['valid_dlt'] == 1 else np.nan, axis = 1)
-        new_features = set(list(self.data.df)).difference(old_features)
+        self.data.df['acc'] = self.data.df.apply(lambda x: x['speed']/x['time_dlt'] if x['valid_dlt'] == 1 else np.nan, axis = 1)
         print("------------------------ Features in self.data.loc Extracted ------------------------")
-        print("New Feature Added: {}".format(new_features))
 
     def process_wifi(self):
-        old_features = set(list(self.data.df))
         self.data.wifi_detail['time'] = self.data.wifi_detail['time'].astype("int").round(-3)
         self.data.wifi_detail['wifi_rssi'] = self.data.wifi_detail['rssi'].apply(pd.to_numeric)
         self.data.wifi_detail['wifi_freq'] = self.data.wifi_detail['freq'].apply(pd.to_numeric)
-        self.data.wifi_detail['wifi_freq'] = self.data.wifi_detail['wifi_freq'].apply(lambda x: 1 if x > 3000 else 0) # 1: 5Hz, 0:2.4Hz
+        self.data.wifi_detail['wifi_freq'] = self.data.wifi_detail['wifi_freq'].apply(lambda x: 5 if x > 3000 else 2.4)
 
         tmp_wifi_mode = self.data.wifi_detail[['time', 'wifi_rssi']].groupby(['time'], as_index = False).agg(lambda x: Counter(x).most_common()[0][0]).add_suffix("_mode")
         tmp_wifi_mean = self.data.wifi_detail[['time', 'wifi_rssi']].groupby(['time'], as_index = False).mean().add_suffix("_mean")
@@ -79,16 +74,11 @@ class DataProcesser():
         tmp_wifi = pd.merge(tmp_wifi, tmp_wifi_min.rename({"time_min": "time"}, axis = 1), on = ['time'])
         tmp_wifi = pd.merge(tmp_wifi, tmp_wifi_max.rename({"time_max": "time"}, axis = 1), on = ['time'])
         tmp_wifi = pd.merge(tmp_wifi, tmp_wifi_std.rename({"time_std": "time"}, axis = 1), on = ['time'])
-        # v2 supplement
-        tmp_wifi['wifi_freq_5ratio'] = self.data.wifi_detail[['time', 'wifi_freq']].groupby(['time'], as_index = False).agg(lambda x: x.sum()/len(x))['wifi_freq']
 
         self.data.df = pd.merge(self.data.df, tmp_wifi, on = ['time'], how = 'left')
-        new_features = set(list(self.data.df)).difference(old_features)
         print("------------------------ Features in self.data.wifi(_detail) Extracted ------------------------")
-        print("New Feature Added: {}".format(new_features))
 
     def process_cells(self):
-        old_features = set(list(self.data.df))
         self.data.cells_detail['time'] = self.data.cells_detail['time'].astype("int").round(-3)
         self.data.cells_detail['isRegistered'] = self.data.cells_detail['isRegistered'].apply(pd.to_numeric)
         self.data.cells_detail['asuLevel'] = self.data.cells_detail['asuLevel'].apply(pd.to_numeric)
@@ -107,12 +97,9 @@ class DataProcesser():
         tmp_cells = pd.merge(tmp_cells, tmp_cells_std.rename({"cells_time_std": "time"}, axis = 1), on = ['time'])
 
         self.data.df = pd.merge(self.data.df, tmp_cells, on = ['time'], how = 'left')
-        new_features = set(list(self.data.df)).difference(old_features)
         print("------------------------ Features in self.data.cells(_detail) Extracted ------------------------")
-        print("New Feature Added: {}".format(new_features))
 
     def process_gps(self):
-        old_features = set(list(self.data.df))
         self.data.gps_detail['time'] = self.data.gps_detail['time'].astype("int").round(-3)
         self.data.gps_detail['gps_snr'] = self.data.gps_detail['snr'].apply(pd.to_numeric)
 
@@ -126,9 +113,7 @@ class DataProcesser():
         tmp_gps = pd.merge(tmp_gps, tmp_gps_std.rename({"time_std": "time"}, axis = 1), on = ['time'])
 
         self.data.df = pd.merge(self.data.df, tmp_gps, on = ['time'], how = 'left')
-        new_features = set(list(self.data.df)).difference(old_features)
         print("------------------------ Features in self.data.gps(_detail) Extracted ------------------------")
-        print("New Feature Added: {}".format(new_features))
 
     def process_pipe(self):
         try:
