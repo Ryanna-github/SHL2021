@@ -132,9 +132,9 @@ class DataProcesser():
 
     def process_data_window(self):
         old_features = set(list(self.data.df))
-        self.data.df['speed_log'] = self.data.df.apply(lambda x: np.log(x['speed'] + 1), axis = 1) # 运行一遍
-        self.data.df['acc_wd_std'] = self.data.df[['label', 'acc']].rolling(10).std()['acc']
-        self.data.df['speed_wd_std'] = self.data.df[['label', 'speed']].rolling(10).std()['speed']
+        self.df['speed_log'] = self.df.apply(lambda x: np.log(x['speed'] + 1), axis = 1) # 运行一遍
+        self.df['acc_wd_std'] = self.df[['label', 'acc']].rolling(10).std()['acc']
+        self.df['speed_wd_std'] = self.df[['label', 'speed']].rolling(10).std()['speed']
         new_features = set(list(self.data.df)).difference(old_features)
         print("------------------------ Windows Features Extracted ------------------------")
         print("New Feature Added: {}".format(new_features))
