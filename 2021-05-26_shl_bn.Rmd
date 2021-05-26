@@ -1,0 +1,44 @@
+---
+title: "2021-05-26_shl_bn"
+author: "任焱"
+date: "5/26/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(ggplot2)
+library(rstan)
+library(dplyr)
+```
+
+```{r}
+df <- read.csv('data/mid_res/20210526_data_bn.csv')
+```
+
+```{r}
+df[is.na(df)] <- 0
+colnames(df)
+```
+
+
+```{r}
+data <- list(N = nrow(df), states = df$label, have_loc = df$have_loc, accuracy_level = df$accuracy_level, speed_level = df$speed_level, speed_log = df$speed_log, acc_wd_std_log = df$acc_wd_std_log, speed_wd_max_log = df$speed_wd_max_log)
+```
+
+
+
+```{r}
+fit <- stan("model/node_bn.stan", data = data)
+```
+
+```{r}
+length(unique(df$label))
+```
+
+
+
+

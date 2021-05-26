@@ -136,10 +136,10 @@ class DataProcesser():
         self.data.df['acc_wd_std'] = self.data.df[['label', 'acc']].rolling(10).std()['acc']
         self.data.df['speed_wd_std'] = self.data.df[['label', 'speed']].rolling(10).std()['speed']
         # location
-        self.data.df['speed_wd_max_log'] = np.log(self.data.df['speed']+1).rolling(20, center = True).max().fillna(method = 'ffill').fillna(method = 'bfill')
-        self.data.df['acc_wd_std_log'] = self.data.df.apply(lambda x: np.log(x['acc_wd_std']*100000 + 1), axis = 1)
+        data.df['speed_wd_max_log'] = np.log(data.df['speed']+1).rolling(20, center = True).max().fillna(method = 'ffill').fillna(method = 'bfill')
+        data.df['acc_wd_std_log'] = data.df.apply(lambda x: np.log(x['acc_wd_std']*100000 + 1), axis = 1)
         # cells
-        self.data.df['cells_dbm_mean'] = self.data.df.apply(lambda x: x['cells_dbm_mean'] if x['cells_dbm_mean'] < 0 else np.nan, axis = 1)
+        data.df['cells_dbm_mean'] = data.df.apply(lambda x: x['cells_dbm_mean'] if x['cells_dbm_mean'] < 0 else np.nan, axis = 1)
 
         new_features = set(list(self.data.df)).difference(old_features)
         print("------------------------ Windows Features Extracted ------------------------")
