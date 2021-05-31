@@ -128,4 +128,4 @@ class SHLDataLoader():
         if have_label:
             self.load_label()
         else:
-            print("No Labels available.")
+            print("No Labels available")

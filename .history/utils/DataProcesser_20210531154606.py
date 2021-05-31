@@ -162,7 +162,7 @@ class DataProcesser():
         self.process_wifi()
         self.process_cells()
         self.process_gps()
-        self.process_data_more(self)
+        self.process_data_window(self)
 
     def one_hot_transform(self, col_name_list):
         self.self.data.df_hot = self.self.data.df.copy()

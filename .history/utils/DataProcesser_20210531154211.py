@@ -30,18 +30,11 @@ class DataProcesser():
         self.data.wifi = self.data.wifi.groupby(['time'], as_index = False).mean()[self.data.wifi.columns.to_list()]
         self.data.cells = self.data.cells.groupby(['time'], as_index = False).mean()[self.data.cells.columns.to_list()]
 
-        try:
-            print("Labeled Dataset Detected")
-            self.data.df = pd.merge(self.data.label, self.data.loc, on = ['time'], how = 'left')
-            self.data.df = pd.merge(self.data.df, self.data.gps.rename({"number": "num_gps"}, axis = 1), on = ['time'], how = 'left')
-            self.data.df = pd.merge(self.data.df, self.data.wifi.rename({"number": "num_wifi"}, axis = 1), on = ['time'], how = 'left')
-            self.data.df = pd.merge(self.data.df, self.data.cells.rename({"number": "num_cells"}, axis = 1), on = ['time'], how = 'left')
-        except:
-            print("Unlabeled Dataset Detected")
-            self.data.df = pd.merge(self.data.loc, self.data.gps.rename({"number": "num_gps"}, axis = 1), on = ['time'], how = 'outer')
-            self.data.df = pd.merge(self.data.df, self.data.wifi.rename({"number": "num_wifi"}, axis = 1), on = ['time'], how = 'outer')
-            self.data.df = pd.merge(self.data.df, self.data.cells.rename({"number": "num_cells"}, axis = 1), on = ['time'], how = 'outer')
-
+        
+        self.data.df = pd.merge(self.data.label, self.data.loc, on = ['time'], how = 'left')
+        self.data.df = pd.merge(self.data.df, self.data.gps.rename({"number": "num_gps"}, axis = 1), on = ['time'], how = 'left')
+        self.data.df = pd.merge(self.data.df, self.data.wifi.rename({"number": "num_wifi"}, axis = 1), on = ['time'], how = 'left')
+        self.data.df = pd.merge(self.data.df, self.data.cells.rename({"number": "num_cells"}, axis = 1), on = ['time'], how = 'left')
         print("------------------------ Basic Features Extracted (data.df) ------------------------")
         print("Feature Initialized: {}".format(list(self.data.df)))
 
@@ -162,7 +155,7 @@ class DataProcesser():
         self.process_wifi()
         self.process_cells()
         self.process_gps()
-        self.process_data_more(self)
+        self.process_data_window(self)
 
     def one_hot_transform(self, col_name_list):
         self.self.data.df_hot = self.self.data.df.copy()

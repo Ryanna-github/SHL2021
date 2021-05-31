@@ -127,5 +127,3 @@ class SHLDataLoader():
         self.load_cells(detail)
         if have_label:
             self.load_label()
-        else:
-            print("No Labels available.")

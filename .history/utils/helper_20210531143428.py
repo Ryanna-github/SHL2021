@@ -26,11 +26,6 @@ def evaluate(y_true, y_pred, names = list(label_dic.values())):
     sns.heatmap(conf)
     print(classification_report(y_true, y_pred, target_names = names))
 
-# save prediction result
-def save_prediction(pred_time, pred_res, file_path = 'data/RY_predictions.txt'):
-    res = pd.DataFrame({'time': pred_time, 'label': pred_res})
-    res.to_csv(file_path, index = False, header = False, sep = '\t')
-
 # one hot encoder
 def get_one_hot(df, class_col_name):
     X = df[class_col_name].values.reshape(-1, 1)
