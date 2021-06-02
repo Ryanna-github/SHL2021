@@ -31,6 +31,12 @@ def save_prediction(pred_time, pred_res, file_path = 'data/RY_predictions.txt'):
     res = pd.DataFrame({'time': pred_time, 'label': pred_res})
     res.to_csv(file_path, index = False, header = False, sep = '\t')
 
+# plot prediction labels
+def plot_prediction(y_pred, y_true):
+    plt.figure(figsize = [20, 8])
+    plt.plot(y_pred, alpha = 0.4)
+    plt.plot(y_true)
+
 # one hot encoder
 def get_one_hot(df, class_col_name):
     X = df[class_col_name].values.reshape(-1, 1)
