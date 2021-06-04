@@ -21,8 +21,8 @@ def gps2utm_north(x):
 
 # evaluate prediction result
 def evaluate(y_true, y_pred, names = list(label_dic.values())):
-    conf = confusion_matrix(y_true , y_pred)
-    print(conf)
+    conf = confusion_matrix(y_true , y_pred, normalize = 'true')
+    print(confusion_matrix(y_true , y_pred))
     sns.heatmap(conf)
     print(classification_report(y_true, y_pred, target_names = names))
 
@@ -37,9 +37,14 @@ def plot_prediction(y_pred, y_true):
     plt.plot(y_pred, alpha = 0.4)
     plt.plot(y_true)
 
-# one hot encoder
-def get_one_hot(df, class_col_name):
-    X = df[class_col_name].values.reshape(-1, 1)
-    enc = OneHotEncoder(handle_unknown = 'ignore', sparse = False).fit(X)
-    col_names = ["{}_{}".format(class_col_name, i) for i in enc.categories_[0].tolist()]
-    return pd.DataFrame(enc.transform(X), columns = col_names)
+# save prediction result
+def save_prediction(pred_time, pred_res, file_path = 'data/RY_predictions.txt'):
+    res = pd.DataFrame({'time': pred_time, 'label': pred_res})
+    res.to_csv(file_path, index = False, header = False, sep = '\t')
+
+# # one hot encoder
+# def get_one_hot(df, class_col_name):
+#     X = df[class_col_name].values.reshape(-1, 1)
+#     enc = OneHotEncoder(handle_unknown = 'ignore', sparse = False).fit(X)
+#     col_names = ["{}_{}".format(class_col_name, i) for i in enc.categories_[0].tolist()]
+#     return pd.DataFrame(enc.transform(X), columns = col_names)
