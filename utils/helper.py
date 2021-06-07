@@ -20,9 +20,12 @@ def gps2utm_north(x):
         return np.nan
 
 # evaluate prediction result
-def evaluate(y_true, y_pred, names = list(label_dic.values())):
-    conf = confusion_matrix(y_true , y_pred, normalize = 'true')
-    print(confusion_matrix(y_true , y_pred))
+def evaluate(y_true, y_pred, normalize = True, names = list(label_dic.values())):
+    if normalize:
+        conf = confusion_matrix(y_true, y_pred, normalize = 'true')
+    else:
+        conf = confusion_matrix(y_true, y_pred)
+    print(confusion_matrix(y_true, y_pred))
     sns.heatmap(conf)
     print(classification_report(y_true, y_pred, target_names = names))
 
